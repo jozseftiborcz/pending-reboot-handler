@@ -1,0 +1,9 @@
+﻿Computer	CBS	WSUS	SCCM	PendingFileRename	LastBootUpTime	LoggedOnUser
+WS27692	True	True	True	True	07/05/2016 08:56:31	DOMAIN\User1
+WS27320	False	False	False	True	05/31/2016 07:14:59	\
+WS7562	True	True	True	True	06/24/2016 13:56:53	DOMAIN\User2;DOMAIN\User3
+WS25657	True	True	True	True	07/04/2016 08:15:36	DOMAIN\User4
+WS27327	True	True	True	False	07/04/2016 12:22:04	DOMAIN\User5
+WS0013304	True	True	True	False	05/30/2016 16:44:25	\
+WS7555	True	True	True	True	05/17/2016 10:01:47	DOMAIN\User6;DOMAIN\User7
+WS7108	True	True	True	False	05/24/2016 18:24:24	DOMAIN\User6
