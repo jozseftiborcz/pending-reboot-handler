@@ -2,6 +2,7 @@
   (:gen-class)
   (:require [clojure.string :as string]
             [clj-time.format :as tfmt]
+            [clj-time.core :as t]
             [clarango.core :as clcore]
             [clarango.document :as cldoc]
             [cheshire.generate :refer [add-encoder]]
@@ -40,6 +41,10 @@
         TF-conv (map (hash-key-mapper ["CBS" "WSUS" "SCCM" "PendingFileRename"] (fn[x] (if (= x "True") true false))))]
     (sequence (comp TF-conv bootup-conv user-conv) (map #(zipmap header (string/split % #"\t")) lines))))
 
+(defn notification-needed?
+ [reboot] 
+  (t/before? (get reboot "LastBootUpTime") (t/minus (t/today-at-midnight) (t/days 5))))
+
 (defn partial-sort-by
   "Returns a partially sorted sequence of the items in coll, where the sort
     order is determined by comparing (keyfn item). If no comparator is
@@ -50,14 +55,18 @@
   ([keyfn coll]
    nil))
 
+
+
 ;(goal "Send warning emails to users")
 (defn -main
   [& args]
   (parse-command-line args)
   ;(directory-source "resources")
-  (let [lf (read-reboot-log-file "_Report.log")]
+  (let [pending-reboots (read-reboot-log-file "_Report.log")]
     (clcore/set-connection!)
     (clcore/set-default-db! "test1")
+    (try (clcol/get-info "pending-reboot-handler") (catch Exception e (clcol/create "pending-reboot-handler")))
+    (filter notification-needed? pending-reboots)
     ;(clcore/with-collection "test-collection" (cldoc/create-with-key {:reboots (read-reboot-log-file  "_Report.log")} :last-login-values)))
     (clcore/with-collection "test-collection" (cldoc/create {:reboots (read-reboot-log-file  "_Report.log")} )))
   (println "Hello, World!"))
